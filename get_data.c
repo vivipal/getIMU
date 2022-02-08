@@ -119,16 +119,16 @@ float * process_data(char **msg){
 int main(int argc, char const *argv[]){                     // run over and over again
 
   char *serial_device = malloc(30);
-  char *binary_file = malloc(50);
+  char *binary_file_path = malloc(50);
   if (argc<2){
     serial_device = "/dev/ttyUSB0";
-    binary_file = "./IMU.bin";
+    binary_file_path = "./";
   }else if(argc==2){
     strcpy(serial_device, argv[1]);
-    binary_file = "./IMU.bin";
+    binary_file_path = "./";
   } else {
     strcpy(serial_device, argv[1]);
-    strcpy(binary_file, argv[2]);
+    strcpy(binary_file_path, argv[2]);
   }
   // open serial communication
   int fd = open_port(serial_device);
@@ -150,8 +150,13 @@ int main(int argc, char const *argv[]){                     // run over and over
     data = process_data(&pTempMessage);
 
 
+    char * new_filename = malloc(100);
+    strcpy(new_filename,binary_file_path);
+    strcat(new_filename,"IMU.bin");
+
+
     FILE * fptr;
-    fptr = fopen(binary_file,"wb");
+    fptr = fopen(new_filename,"wb");
     fwrite(data,sizeof(float),3,fptr);
     fclose(fptr);
 
